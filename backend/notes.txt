@@ -4,3 +4,6 @@ await ka mtlb hai ki jab tak ek promise resolve ka ho jaye ruk jao and iski valu
 for authentication there are different mechanism 
 there is session token and json web token 
 in this we are using jsonwebtoken 
+
+middleware ek function hai jo ki call kiya jayega jab bhi website ke login request wale route par koi bhi request ayegi tab 
+
