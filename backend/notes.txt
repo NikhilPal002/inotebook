@@ -1,0 +1,6 @@
+bcryptjs is used for adding salt and more security to the user data  
+express validator is used to validate the passowrd and email of the user 
+await ka mtlb hai ki jab tak ek promise resolve ka ho jaye ruk jao and iski value leke jaao
+for authentication there are different mechanism 
+there is session token and json web token 
+in this we are using jsonwebtoken 
