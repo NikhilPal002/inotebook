@@ -7,3 +7,4 @@ in this we are using jsonwebtoken
 
 middleware ek function hai jo ki call kiya jayega jab bhi website ke login request wale route par koi bhi request ayegi tab 
 
+Notes.js me humne name karke ek field add kiya hai jise pata chale ki woh konsa user hai jiske notes hai and kisi dusre ko uske notes na dikhe 
