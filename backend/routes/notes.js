@@ -61,7 +61,6 @@ router.put('/updatenote/:id', fetchuser, async (req, res) => {
     console.error(error.message);
     res.status(500).send("Internal Server Error");
   }
-
 })
 
 // ROUTE 4: Delete an existing Note using: DELETE "/api/notes/deletenote". Login required
