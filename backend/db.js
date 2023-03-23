@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 // const mongoURI = "mongodb+srv://nikhilpal002:nikhilpal@cluster1.rxwyksh.mongodb.net/?retryWrites=true&w=majority"    atlas to app direct
 // const mongoURI = " mongodb+srv://nikhilpal002:nikhilpal@cluster1.rxwyksh.mongodb.net/test"    cluster connected to compass
 const mongoURI = "mongodb://127.0.0.1:27017/inotebook?readPreference=primary&directConnection=true&tls=false"
-
+mongoose.set('strictQuery', false);
 
 const connectToMongo = () => {         // using async and await function so that promises can resolve
     mongoose.connect(mongoURI, () => {     // ()+> callback function jo ki humko kuch return karke dega 
