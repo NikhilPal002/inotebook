@@ -1,5 +1,4 @@
 import React from 'react'
-import { Link } from 'react-router-dom';
 
 function NoteItem(props) {
     const { note } = props;          // distructuring method
@@ -13,8 +12,7 @@ function NoteItem(props) {
                         <i className="fa-solid fa-pen-to-square mx-2"></i>
                     </div>
                     <p className="card-text"> {note.description} </p>
-                    <Link to="#" className="btn btn-primary my-2">Go somewhere</Link>
-                </div>
+                    </div>
             </div>
         </div>
     )
