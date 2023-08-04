@@ -11,7 +11,7 @@ const Login = (props) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjQxOWVhY2QwYmZiOTA5NTNmMjJiOTMxIn0sImlhdCI6MTY3OTQyNTAxM30.IPcQ3vWULZu8Me4gCzri6v7MT7Zy0ww5nGzmIejcT2c"
+                // "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjQxOWVhY2QwYmZiOTA5NTNmMjJiOTMxIn0sImlhdCI6MTY3OTQyNTAxM30.IPcQ3vWULZu8Me4gCzri6v7MT7Zy0ww5nGzmIejcT2c"
             },
             body: JSON.stringify({ email: credentials.email, password: credentials.password })
         });
@@ -20,8 +20,8 @@ const Login = (props) => {
         if (json.success) {
             //    save the auth token and reflect
             localStorage.setItem('token', json.authtoken);
-            navigate("/");
             props.showAlert(" Account Created Successfully", "success")
+            navigate('/');
         }
         else {
             props.showAlert("Invalid credentials", "danger")
