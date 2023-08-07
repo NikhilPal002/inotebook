@@ -113,7 +113,7 @@ const About = () => {
                 </div>
             </div>
             <div className="credits mt-3">
-                Designed by <span>Bhavya Khurana</span>
+                Designed by <span>Nikhil Pal</span>
             </div>
         </>
     )
