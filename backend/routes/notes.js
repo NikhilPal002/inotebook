@@ -1,85 +1,100 @@
 const express = require('express');
 const router = express.Router();
 const fetchuser = require('../middleware/fetchuser');
-const Note = require('../models/Note');
+const Notes = require('../models/Note');
 const { body, validationResult } = require('express-validator');
 
-// ROUTE 1: Get All the Notes using: GET "/api/notes/getuser". Login required
+//~ Get all notes: GET "/api/notes/fetchallnotes" 
+// ROUTE: 1 /api/notes/fetchallnotes
 router.get('/fetchallnotes', fetchuser, async (req, res) => {
   try {
-    const notes = await Note.find({ user: req.user.id });
-    res.json(notes)
+
+      const notes = await Notes.find({ user: req.user.id });
+      res.json(notes);
   } catch (error) {
-    console.error(error.message);
-    res.status(500).send("Internal Server Error");
-  }
-})
-
-// ROUTE 2: Add a new Note using: POST "/api/notes/addnote". Login required
-router.post('/addnote', fetchuser, [
-  body('title', 'Enter a valid title').isLength({ min: 3 }),
-  body('description', 'Description must be atleast 5 characters').isLength({ min: 5 }),], async (req, res) => {
-    try {
-      const { title, description, tag } = req.body;        //destructuring method
-
-      // If there are errors, return Bad request and the errors
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {         // agar kuch error hai toh woh error ko send kardo response me 
-        return res.status(400).json({ errors: errors.array() });    // agar yeh error pass ho jaye toh ek naya note create kardo
-      }
-      const note = new Note({
-        title, description, tag, user: req.user.id
-      })
-      const savedNote = await note.save()
-      res.json(savedNote)
-    } catch (error) {
       console.error(error.message);
-      res.status(500).send("Internal Server Error");
-    }
-  })
+      res.status(500).send('Server Error');
+  }
+});
 
-// ROUTE 3: Update an existing Note using: PUT "/api/notes/updatenote". Login required
+//~ Add a note: POST "/api/notes/addnote" 
+//~ Login required
+// ROUTE: 2 /api/notes/addnote
+router.post('/addnote', fetchuser, [
+  body('title', 'Enter Title'),
+  body('description', 'Enter Description'),
+], async (req, res) => {
+
+  try {
+      //? If there are errors, return 400 (Bad) status code and errors.
+      const errors = validationResult(req);
+
+      const { title, description, tag } = req.body;
+
+      if (!errors.isEmpty()) {
+          return res.status(400).json({ errors: errors.array() });
+      }
+      const note = new Notes({
+          title, description, tag, user: req.user.id
+      });
+      const savedNote = await note.save();
+
+      res.json(savedNote);
+  } catch (error) {
+      console.error(error.message);
+      res.status(500).send('Server Error');
+  }
+});
+
+//~ Update a note: PUT "/api/notes/updatenote/:id" 
+// ROUTE: 3 /api/notes/updatenote/:id
+
 router.put('/updatenote/:id', fetchuser, async (req, res) => {
   const { title, description, tag } = req.body;
   try {
-    // Create a newNote object
-    const newNote = {};
-    if (title) { newNote.title = title };     // title aa raha hai as part of request to iss object me add kardo wrna nahi aa raha hai toh user update nahi karna chata hai
-    if (description) { newNote.description = description };
-    if (tag) { newNote.tag = tag };
+      // Create a newNote object
+      const newNote = {};
+      if (title) { newNote.title = title };
+      if (description) { newNote.description = description };
+      if (tag) { newNote.tag = tag };
 
-    // Find the note to be updated and update it
-    let note = await Note.findById(req.params.id);
-    if (!note) { return res.status(404).send("Not Found") }
+      // Find the note to be updated and update it
+      let note = await Notes.findById(req.params.id);
+      if (!note) {
+          return res.status(404).send("Not Found")
+      }
+      if (note.user.toString() !== req.user.id) {
+          return res.status(401).send("Not Allowed");
+      }
 
-    if (note.user.toString() !== req.user.id) {       // yeh tostring dega iss note ki id
-      return res.status(401).send("Not Allowed");
-    }
-    note = await Note.findByIdAndUpdate(req.params.id, { $set: newNote }, { new: true })
-    res.json({ note });
+      note = await Notes.findByIdAndUpdate(req.params.id, { $set: newNote }, { new: true })
+      res.json({ note });
   } catch (error) {
-    console.error(error.message);
-    res.status(500).send("Internal Server Error");
+      console.error(error.message);
+      res.status(500).send('Server Error');
   }
-})
+});
 
-// ROUTE 4: Delete an existing Note using: DELETE "/api/notes/deletenote". Login required
+//~ Delete a note: DELETE "/api/notes/deletenote/:id" 
+// ROUTE: 4 /api/notes/deletenote/:id
+
 router.delete('/deletenote/:id', fetchuser, async (req, res) => {
   try {
-    // Find the note to be delete and delete it
-    let note = await Note.findById(req.params.id);
-    if (!note) { return res.status(404).send("Not Found") }
+      // Find the note to be deleted and delete it
+      let note = await Notes.findById(req.params.id);
+      if (!note) {
+          return res.status(404).send("Not Found")
+      }
+      // Allow only the user who created the note to delete it
+      if (note.user.toString() !== req.user.id) {
+          return res.status(401).send("Not Allowed");
+      }
 
-    // Allow deletion only if user owns this Note
-    if (note.user.toString() !== req.user.id) {
-      return res.status(401).send("Not Allowed");
-    }
-    note = await Note.findByIdAndDelete(req.params.id)
-    res.json({ "Success": "Note has been deleted", note: note });
+      note = await Notes.findByIdAndDelete(req.params.id);
+      res.json({ msg: 'Success, Note has been deleted', note });
   } catch (error) {
-    console.error(error.message);
-    res.status(500).send("Internal Server Error");
-  }
-})
 
-module.exports = router
+  }
+});
+
+module.exports = router;
