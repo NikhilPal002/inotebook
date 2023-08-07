@@ -1,7 +1,7 @@
 import React from 'react'
 
 function Alert(props) {
-    const capatalize = (word) => {
+    const capitalize = (word) => {
         if (word==="danger") {
             word="error"
         }
@@ -10,9 +10,9 @@ function Alert(props) {
     }
 
     return (
-        <div style={{ height: '50px' }} >
+        <div className='mt fixed-top'>
             {props.alert && <div className={`alert alert-${props.alert.type} alert-dismissible fade show`} role="alert">
-                <strong>{capatalize(props.alert.type)}</strong>: {props.alert.msg}
+                <strong>{capitalize(props.alert.msgg)}</strong> : {props.alert.msg}
             </div>}
         </div>
     )

@@ -1,65 +1,97 @@
-import React, { useState } from 'react'
-import { useNavigate } from "react-router-dom";
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 const SignUp = (props) => {
 
-    const [credentials, setCredentials] = useState({ name: "", email: "", password: "", cpassword: "" })
-    let navigate = useNavigate();
+    const navigate = useNavigate();
+
+    const [signup, setSignUp] = useState({ name: '', email: '', password: '', confirmPassword: '' });
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        const { name, email, password } = credentials;
-        const response = await fetch(`http://localhost:5000/api/auth/createuser`, {
+        const { name, email, password } = signup;
+        const response = await fetch('http://localhost:5000/api/auth/createuser', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjQxOWVhY2QwYmZiOTA5NTNmMjJiOTMxIn0sImlhdCI6MTY3OTQyNTAxM30.IPcQ3vWULZu8Me4gCzri6v7MT7Zy0ww5nGzmIejcT2c"
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({ name, email, password })
         });
-        const json = await response.json()
-        console.log(json);
+        const json = await response.json();
         if (json.success) {
-            //    save the auth token and reflect
-            localStorage.setItem('token', json.authtoken);
-            navigate("/");
-            props.showAlert(" Account Created Successfully", "success")
+            //? Save auth token and Redirect to home page 
+            localStorage.setItem('token', json.authToken);
+            navigate('/');
+            props.showAlert('Account Created Successfully', 'success', 'Thank you for signing up!!');
+        } else {
+            props.showAlert('Invalid Details', 'danger', 'Opps!!');
         }
-        else{
-            props.showAlert("Invalid Credentails", "danger")
-        }
-
     }
 
     const onChange = (e) => {
-        setCredentials({ ...credentials, [e.target.name]: e.target.value })
+        // ... Spread operator
+        setSignUp({ ...signup, [e.target.name]: e.target.value });
     }
 
     return (
-        <div className='container'>
-            <form onSubmit={handleSubmit}>
-                <div className="mb-3">
-                    <label htmlFor="name" className="form-label">Name</label>
-                    <input type="text" className="form-control" id="name" name='name' onChange={onChange} aria-describedby="name" />
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="email" className="form-label">Email address</label>
-                    <input type="email" className="form-control" id="email" name='email' onChange={onChange} aria-describedby="emailHelp" />
-                    <div id="emailHelp" className="form-text">We'll never share your email with anyone else.</div>
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="Password" className="form-label">Password</label>
-                    <input type="password" className="form-control" name='password' onChange={onChange} id="password" minLength={5} required />
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="cPassword" className="form-label">Confirm Password</label>
-                    <input type="password" className="form-control" name='cpassword' onChange={onChange} id="cpassword" minLength={5} required/>
-                </div>
+        <>
+            <style jsx='true'>
+                {`
+                    .signUpBtn {
+                        color: #fff;
+                        text-decoration: none !important;
+                        outline: 0 !important;
+                        box-shadow : none !important;
+                        background-color: #12de93;
+                    }
 
-                <button type="submit" className="btn btn-primary">Submit</button>
-            </form>
-        </div>
-    )
-}
+                    .signUpBtn:hover {
+                        color: #fff;
+                        background-color: #028b59 !important;
+                    }
+                `}
+            </style>
+            <div className='mt'>
+                <div className='container center'>
+                    <div className="card bg-light col-lg-5 col-md-8">
+                        <div className="card-body">
+                            <div className="text-center fw-bold navbar-brand">i<span style={{ color: '#12de93' }}>Note</span>book</div>
+                            <h3 className="fw-bold"><span style={{ color: '#12de93' }}>Sign Up</span></h3>
+                            <p>Get started with your free account</p>
+                            <hr />
+                            <form onSubmit={handleSubmit}>
+                                <div className="input-group mb-3">
+                                    <span htmlFor='name' className="input-group-text" style={{ textDecoration: 'none', borderColor: '#12de93' }}><i className="bx bxs-user" style={{ color: '#12de93' }}></i></span>
+                                    <input onChange={onChange} type="type" className="form-control d-flex row" id="name" name='name' placeholder="Username" aria-label="Username" aria-describedby="basic-addon1" style={{ textDecoration: 'none', borderColor: '#12de93' }} />
+                                </div>
+                                <div className="input-group mb-3">
+                                    <span htmlFor='email' className="input-group-text" style={{ textDecoration: 'none', borderColor: '#12de93' }}><i className="bx bxl-gmail" style={{ color: '#12de93' }}></i></span>
+                                    <input onChange={onChange} type="email" className="form-control d-flex row" id="email" name='email' placeholder="Email" aria-label="Email" aria-describedby="basic-addon1" style={{ textDecoration: 'none', borderColor: '#12de93' }} />
+                                </div>
+                                <div className="row mb-3">
+                                    <div className="col">
+                                        <div className="input-group mb-3">
+                                            <span htmlFor='password' className="input-group-text" style={{ textDecoration: 'none', borderColor: '#12de93' }}><i className="bx bxs-lock" style={{ color: '#12de93' }}></i></span>
+                                            <input onChange={onChange} type="password" className="form-control" id="password" name='password' placeholder="Password" aria-label="Password" minLength={5} required aria-describedby="basic-addon1" style={{ textDecoration: 'none', borderColor: '#12de93' }} />
+                                        </div>
+                                    </div>
+                                    <div className="col">
+                                        <div className="input-group mb-3">
+                                            <span htmlFor='confirmpassword' className="input-group-text" style={{ textDecoration: 'none', borderColor: '#12de93' }}><i className="bx bxs-lock" style={{ color: '#12de93' }}></i></span>
+                                            <input onChange={onChange} type="password" className="form-control" id="confirmpassword" name='confirmpassword' required style={{ textDecoration: 'none', borderColor: '#12de93' }} placeholder='Confirm Password' />
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="submit" className="btn signUpBtn d-block col-xxl-3 col-xl-4 col-lg-4 col-md-6 mx-auto">Sign Up</button>
+                            </form>
+                        </div>
+                    </div>
+                    <p className='mt-2'>Already registered <Link to='/login' className='fw-bold' style={{ textDecoration: 'none' }}>Login?</Link> </p>
+                </div>
+            </div >
+        </>
+    );
 
-export default SignUp
+};
+
+export default SignUp;

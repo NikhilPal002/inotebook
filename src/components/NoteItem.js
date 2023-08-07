@@ -1,26 +1,40 @@
-import React, {useContext} from 'react'
-import noteContext from "../context/notes/noteContext"
+import React, { useContext } from 'react';
+import NoteContext from "../context/notes/NoteContext";
 
-
-const Noteitem = (props) => {
-    const context = useContext(noteContext);
+const NoteItem = (props) => {
+    const { note, updateNote } = props
+    const context = useContext(NoteContext);
     const { deleteNote } = context;
-    const { note, updateNote } = props;
+
+
     return (
-        <div className="col-md-3">
-            <div className="card my-3">
-                <div className="card-body">
-                    <div className="d-flex align-items-center">
+        <>
+            <div className='col-xxl-3 col-xl-4 col-lg-4 col-md-6'>
+                <div className="card bg-light text-center my-4">
+                    <div className="card-body">
                         <h5 className="card-title">{note.title}</h5>
-                        <i className="far fa-trash-alt mx-2" onClick={()=>{deleteNote(note._id); props.showAlert("Deleted successfully", "success")}}></i>
-                        <i className="far fa-edit mx-2" onClick={()=>{updateNote(note)}}></i>
+                        <hr />
+                        <p className="card-text">{note.description}</p>
+                        <div className="d-flex justify-content-center gap-2">
+                            <div onClick={() => { deleteNote(note._id); props.showAlert('Task has been Deleted successfully', 'info', 'Deleted!!'); }} className='btn btn-outline-danger fs-4'>
+                                <i className='bx bxs-trash'></i>
+                            </div>
+                            <div onClick={() => { updateNote(note) }} className='btn btn-success fs-4'>
+                                <i className='bx bxs-edit'></i>
+                            </div>
+                        </div>
+                        <hr />
+                        <div className="mt-2">
+                            <div className="text-center fw-bold">i<span style={{ color: '#12de93' }}>Note</span>book</div>
+                        </div>
+                        <span className="position-absolute top-0 start-50 translate-middle text-wrap badge" style={{ backgroundColor: '#12de93' }}>
+                            {note.tag}
+                        </span>
                     </div>
-                    <p className="card-text">{note.description}</p>
-
                 </div>
-            </div>
-        </div>
-    )
-}
+            </div >
+        </>
+    );
+};
 
-export default Noteitem
+export default NoteItem;
